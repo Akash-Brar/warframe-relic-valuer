@@ -4,6 +4,27 @@ import json
 
 WARFRAME_MARKET_URL = "https://api.warframe.market/v1"
 
+def trimmedMean(prices, proportionToCut=0.2):
+    n = len(prices)
+    k = int(n * proportionToCut)
+    sortedPrices = sorted(prices)
+    trimmedPrices = sortedPrices[k:n-k]
+    
+    if len(trimmedPrices) == 0:
+        return 0
+    else:
+        return sum(trimmedPrices) / len(trimmedPrices)
+
+def getPrices(orders):
+    buyPrices = []
+    sellPrices = []
+    for order in orders["payload"]["orders"]:
+        if order["order_type"] == "sell":
+            sellPrices.append(order["platinum"])
+        elif order["order_type"] == "buy":
+            buyPrices.append(order["platinum"])
+    return trimmedMean(buyPrices), trimmedMean(sellPrices)
+    
 def getItemOrders(urlName):
     url = f"{WARFRAME_MARKET_URL}/items/{urlName}/orders"
     headers = {
@@ -45,28 +66,6 @@ def fetchOrders(intactRelics):
 
     return intactRelics
 
-def getPrices(orders):
-    buyPrices = []
-    sellPrices = []
-    for order in orders["payload"]["orders"]:
-        if order["order_type"] == "sell":
-            sellPrices.append(order["platinum"])
-        elif order["order_type"] == "buy":
-            buyPrices.append(order["platinum"])
-    return trimmedMean(buyPrices), trimmedMean(sellPrices)
-    
-def trimmedMean(prices, proportionToCut=0.2):
-    n = len(prices)
-    k = int(n * proportionToCut)
-    sortedPrices = sorted(prices)
-    trimmedPrices = sortedPrices[k:n-k]
-    
-    if len(trimmedPrices) == 0:
-        return 0
-    else:
-        return sum(trimmedPrices) / len(trimmedPrices)
-
-
 def getIntactRelics(filename):
     with open(filename, "r", encoding="utf-8") as file:
         relics = json.load(file)
@@ -104,8 +103,4 @@ def main():
 
 if __name__ == "__main__":
     items = ["ward_recovery", "undercroft_dax_camp_scene", "undercroft_lodging_scene", "undercroft_lunaro_scene", ]
-    # print(getItemOrders("ward_recovery"))
-    # orders = getItemOrders("red_veil_knee_guards")
-    # buy, sell = getPrices(orders)
-    # print(buy, sell)
     main()
