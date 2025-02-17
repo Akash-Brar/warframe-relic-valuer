@@ -37,4 +37,4 @@ jobs:
         run: |
           git add Relics.json RelicValues.json
           git commit -m "Updated Relics.json and RelicValues.json [GitHub Actions]" || echo "No changes to commit"
-          git push
+          git push origin main
