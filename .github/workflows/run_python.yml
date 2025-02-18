@@ -37,6 +37,4 @@ jobs:
         run: |
           git add Relics.json RelicValues.json
           git commit -m "Updated Relics.json and RelicValues.json [GitHub Actions]" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push
