@@ -37,4 +37,4 @@ jobs:
         run: |
           git add Relics.json RelicValues.json
           git commit -m "Updated Relics.json and RelicValues.json [GitHub Actions]" || echo "No changes to commit"
-          git push origin main
+          git push https://x-access-token:${{ secrets.WARFRAME_RELIC_SECRET }}@github.com/akashbrar1/warframe-relic-market-values.git
