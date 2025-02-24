@@ -88,8 +88,8 @@ def getValues(intactRelics):
 
             fetchCount += 1
         
-        relic["totalSellValue"] = totalSellValue
-        relic["totalBuyValue"] = totalBuyValue
+        relic["totalSellValue"] = round(totalSellValue,1)
+        relic["totalBuyValue"] = round(totalBuyValue,1)
 
     return intactRelics
 
