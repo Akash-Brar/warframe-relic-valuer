@@ -62,6 +62,8 @@ def getValues(intactRelics):
     for relic in intactRelics:
         relicCount += 1
         print(f"{relicCount}/{total}  {round((relicCount/total)*100)}%")
+        totalSellValue = 0
+        totalBuyValue = 0
 
         for item in relic["items"]:
             if "Forma" in item["name"]:
@@ -81,8 +83,13 @@ def getValues(intactRelics):
                 buyPrice, sellPrice = getPrices(orders)
                 item["sellValue"] = round(sellPrice, 1)
                 item["buyValue"] = round(buyPrice, 1)
+                totalSellValue += round(sellPrice, 1)
+                totalBuyValue += round(buyPrice, 1)
 
             fetchCount += 1
+        
+        relic["totalSellValue"] = totalSellValue
+        relic["totalBuyValue"] = totalBuyValue
 
     return intactRelics
 
