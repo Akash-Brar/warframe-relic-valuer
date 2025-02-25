@@ -1,0 +1,123 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #111;
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+input, select {
+    padding: 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #222;
+    color: white;
+    font-size: 16px;
+}
+
+input {
+    width: 250px;
+}
+
+select {
+    cursor: pointer;
+    appearance: none;
+    background-color: #222;
+    border: 1px solid #444;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+select:focus {
+    outline: none;
+    border-color: #00aaff;
+}
+
+select::-ms-expand {
+    display: none; /* Hide dropdown arrow in IE */
+}
+
+.last-updated {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #bbb;
+}
+
+#relics-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 15px;
+    padding: 20px;
+}
+
+.relic-card {
+    background-color: #222;
+    border: 1px solid #444;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    text-align: left;
+    position: relative;
+}
+
+.relic-card p{
+    margin: 10px;
+}
+
+.relic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vault-status {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.vaulted {
+    color: red;
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.not-vaulted {
+    color: green;
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
+.items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.item {
+    background-color: #333;
+    padding: 8px;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.item-values {
+    color: #00aaff;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
