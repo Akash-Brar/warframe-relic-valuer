@@ -1,6 +1,7 @@
 import requests
 import time
 import json
+from datetime import datetime
 
 # Relics.json from warframe-items (https://github.com/WFCD/warframe-items)
 # Warframe Market API (https://warframe.market/api_docs)
@@ -132,6 +133,13 @@ def getIntactRelics(filename):
 
     return intact_relics
 
+# Logs the time the script finishes, and stores it into a json file
+def logTime():
+    now = datetime.now()
+    formattedDate = now.strftime("%B %d, %Y %I:%M %p MST")
+    timestamp_data = {"last_updated": formattedDate}
+    with open("last_updated.json", "w") as f:
+        json.dump(timestamp_data, f, indent=2)
 
 def main():
     relicFile = "Relics.json"
@@ -141,6 +149,7 @@ def main():
     with open("RelicValues.json", "w", encoding="utf-8") as file:
         json.dump(relicValues, file, indent=2)
 
+    logTime()
 
 if __name__ == "__main__":
     main()
