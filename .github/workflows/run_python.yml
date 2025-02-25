@@ -35,6 +35,6 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git add Relics.json RelicValues.json
-          git commit -m "Updated Relics.json and RelicValues.json [GitHub Actions]" || echo "No changes to commit"
+          git add Relics.json RelicValues.json last_updated.json
+          git commit -m "Updated Relics.json, RelicValues.json and last_updated.json [GitHub Actions]" || echo "No changes to commit"
           git push
