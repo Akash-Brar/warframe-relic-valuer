@@ -136,7 +136,7 @@ def getIntactRelics(filename):
 # Logs the time the script finishes, and stores it into a json file
 def logTime():
     now = datetime.now()
-    formattedDate = now.strftime("%B %d, %Y %I:%M %p MST")
+    formattedDate = now.strftime("%B %d, %Y")
     timestamp_data = {"last_updated": formattedDate}
     with open("last_updated.json", "w") as f:
         json.dump(timestamp_data, f, indent=2)
