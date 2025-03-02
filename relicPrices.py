@@ -23,6 +23,7 @@ def trimmedMean(prices, proportionToCut=0.2):
     else:
         return sum(trimmedPrices) / len(trimmedPrices)
 
+
 # Gets the prices from each order, and seperates them into buy and sell prices
 # Input: json (orders of a single item)
 # Output: 0 or float
@@ -60,16 +61,18 @@ def getValues(intactRelics):
     relicCount = 0
     fetchCount = 0
 
+    fetchedItems = {}
+
     for relic in intactRelics:
         relicCount += 1
         print(f"{relicCount}/{total}  {round((relicCount/total)*100)}%")
-        totalSellValue = 0
-        totalBuyValue = 0
 
         for item in relic["items"]:
+            if item["name"] in fetchedItems:
+                continue
+
             if "Forma" in item["name"]:
-                item["sellValue"] = 0
-                item["buyValue"] = 0
+                fetchedItems[item["name"]] = {"buyValue": 0, "sellValue": 0}
                 continue
 
             # Can only get 3 orders per second
@@ -78,21 +81,18 @@ def getValues(intactRelics):
 
             orders = getItemOrders(item["url_name"])
             if type(orders) == str:
-                item["sellValue"] = 0
-                item["buyValue"] = 0
+                fetchedItems[item["name"]] = {"buyValue": 0, "sellValue": 0}
             else:
                 buyPrice, sellPrice = getPrices(orders)
-                item["sellValue"] = round(sellPrice, 1)
-                item["buyValue"] = round(buyPrice, 1)
-                totalSellValue += round(sellPrice, 1)
-                totalBuyValue += round(buyPrice, 1)
+                fetchedItems[item["name"]] = {
+                    "buyValue": round(buyPrice, 1),
+                    "sellValue": round(sellPrice, 1),
+                }
 
             fetchCount += 1
-        
-        relic["totalSellValue"] = round(totalSellValue,1)
-        relic["totalBuyValue"] = round(totalBuyValue,1)
 
-    return intactRelics
+    return fetchedItems
+
 
 # Parses Relics.json to get all unique relics, with their name, warframe
 # market url, vaulted status, and the items in each relic. It also parses each
@@ -133,6 +133,23 @@ def getIntactRelics(filename):
 
     return intact_relics
 
+
+def addValuesToRelics(intactRelics, itemValues):
+    for relic in intactRelics:
+        totalBuyValue = 0
+        totalSellValue = 0
+        for item in relic["items"]:
+            buyValue = itemValues[item["name"]]["buyValue"]
+            sellValue = itemValues[item["name"]]["sellValue"]
+            item["buyValue"] = buyValue
+            item["sellValue"] = sellValue
+            totalBuyValue += buyValue
+            totalSellValue += sellValue
+        relic["totalBuyValue"] = round(totalBuyValue, 1)
+        relic["totalSellValue"] = round(totalSellValue, 1)
+    return intactRelics
+
+
 # Logs the time the script finishes, and stores it into a json file
 def logTime():
     now = datetime.now()
@@ -141,15 +158,18 @@ def logTime():
     with open("last_updated.json", "w") as f:
         json.dump(timestamp_data, f, indent=2)
 
+
 def main():
     relicFile = "Relics.json"
     intactRelics = getIntactRelics(relicFile)
-    relicValues = getValues(intactRelics)
+    itemValues = getValues(intactRelics)
+    relicValues = addValuesToRelics(intactRelics, itemValues)
 
     with open("RelicValues.json", "w", encoding="utf-8") as file:
         json.dump(relicValues, file, indent=2)
 
     logTime()
+
 
 if __name__ == "__main__":
     main()
