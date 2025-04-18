@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
             relics = data.sort((a, b) => b.totalSellValue - a.totalSellValue);
+            addPositions(relics); // Add positions based on sorted order
             displayedRelics = relics;
             loadInitialRelics();
         });
@@ -22,6 +23,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             lastUpdatedDiv.textContent = `Last updated on: ${data.last_updated}`;  // Insert date and time
         });
+
+    function addPositions(sortedRelics) {
+        sortedRelics.forEach((relic, index) => {
+            relic.position = index + 1; // Assign position based on sorted order
+        });
+    }
 
     function loadInitialRelics() {
         relicContainer.innerHTML = ""; // Clear before reloading
@@ -35,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         card.innerHTML = `
             <div class="relic-header">
-                <h2>${relic.name}</h2>
+                <h2>${relic.position}. ${relic.name}</h2>
                 <p class="vault-status ${relic.vaulted ? "vaulted" : "not-vaulted"}">
                     ${relic.vaulted ? "Vaulted" : "Available"}
                 </p>
