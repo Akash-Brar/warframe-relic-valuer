@@ -2,7 +2,7 @@
 
 A web app that ranks Warframe relics from most to least valuable based on the sum of the truncated average platinum value of their contained items. Data is sourced from the Warframe Market API and relic information is pulled from WFCD's warframe-items repository.
 
-<img width="1440" alt="Screenshot 2025-06-04 at 10 40 00 AM" src="https://github.com/user-attachments/assets/9ca70ca5-c367-4832-b122-3ac3ccbc72ce" />
+<img width="1425" alt="Screenshot 2025-06-04 at 10 46 19 AM" src="https://github.com/user-attachments/assets/79392c65-8529-4147-98e8-039be5832e0e" />
 
 ## Features
 
