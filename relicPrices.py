@@ -3,10 +3,9 @@ import time
 import json
 from datetime import datetime
 
-# Relics.json from warframe-items (https://github.com/WFCD/warframe-items)
 # Warframe Market API (https://warframe.market/api_docs)
 
-WARFRAME_MARKET_URL = "https://api.warframe.market/v1"
+WARFRAME_MARKET_URL = "https://api.warframe.market/v2/"
 
 
 # Calculates timmed/truncated mean, to remove extreme outliers
@@ -30,10 +29,10 @@ def trimmedMean(prices, proportionToCut=0.2):
 def getPrices(orders):
     buyPrices = []
     sellPrices = []
-    for order in orders["payload"]["orders"]:
-        if order["order_type"] == "sell":
+    for order in orders["data"]:
+        if order["type"] == "sell":
             sellPrices.append(order["platinum"])
-        elif order["order_type"] == "buy":
+        elif order["type"] == "buy":
             buyPrices.append(order["platinum"])
     return trimmedMean(buyPrices), trimmedMean(sellPrices)
 
@@ -42,7 +41,7 @@ def getPrices(orders):
 # Input: string
 # Output: json (orders of a single item)
 def getItemOrders(urlName):
-    url = f"{WARFRAME_MARKET_URL}/items/{urlName}/orders"
+    url = f"{WARFRAME_MARKET_URL}/orders/item/{urlName}"
     headers = {"Accept": "application/json", "User-Agent": "YourAppName/1.0"}
 
     response = requests.get(url, headers=headers)
@@ -93,47 +92,6 @@ def getValues(intactRelics):
 
     return fetchedItems
 
-
-# Parses Relics.json to get all unique relics, with their name, warframe
-# market url, vaulted status, and the items in each relic. It also parses each
-# item in each relic to get their namee, warframe market url, rarity, and
-# chance.
-# Input: string
-# Output: json (parsed relics)
-def getIntactRelics(filename):
-    with open(filename, "r", encoding="utf-8") as file:
-        relics = json.load(file)
-
-    intact_relics = []
-
-    for relic in relics:
-        if "Intact" in relic.get("name", "") and "Requiem" not in relic.get("name", ""):
-
-            if relic.get("marketInfo") == None:
-                continue
-
-            relic_info = {
-                "name": relic["name"].replace(" Intact", ""),
-                "urlName": relic["marketInfo"]["urlName"],
-                "vaulted": relic.get("vaulted", True),
-                "items": [],
-            }
-
-            for reward in relic.get("rewards", []):
-                item = reward.get("item", {})
-                item_info = {
-                    "name": item.get("name", ""),
-                    "url_name": item.get("warframeMarket", {}).get("urlName", ""),
-                    "rarity": reward.get("rarity", ""),
-                    "chance": reward.get("chance", 0),
-                }
-                relic_info["items"].append(item_info)
-
-            intact_relics.append(relic_info)
-
-    return intact_relics
-
-
 def addValuesToRelics(intactRelics, itemValues):
     for relic in intactRelics:
         totalBuyValue = 0
@@ -160,8 +118,9 @@ def logTime():
 
 
 def main():
-    relicFile = "Relics.json"
-    intactRelics = getIntactRelics(relicFile)
+    filename = "Relics.json"
+    with open(filename, "r", encoding="utf-8") as file:
+        intactRelics = json.load(file)
     itemValues = getValues(intactRelics)
     relicValues = addValuesToRelics(intactRelics, itemValues)
 
@@ -169,6 +128,8 @@ def main():
         json.dump(relicValues, file, indent=2)
 
     logTime()
+    # orders = getItemOrders("ward_recovery")
+    # print(orders)
 
 
 if __name__ == "__main__":
