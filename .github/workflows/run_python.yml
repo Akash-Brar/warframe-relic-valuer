@@ -1,4 +1,4 @@
-name: Run Python Script with Updated JSON
+name: Run Relic Scraper and Price Fetcher
 
 on:
   schedule:
@@ -13,19 +13,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download latest Relics.json
-        run: |
-          curl -o Relics.json https://raw.githubusercontent.com/WFCD/warframe-items/master/data/json/Relics.json
-
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.x'
 
       - name: Install requests
-        run: pip install requests
+        run: pip install requests beautifulsoup4
 
-      - name: Run Python script
+      - name: Run Relic Scraper
+        run: python relicScraper.py
+
+      - name: Run Price Fetcher
         run: python relicPrices.py
 
       - name: Configure Git
@@ -36,5 +35,5 @@ jobs:
       - name: Commit and Push Changes
         run: |
           git add Relics.json RelicValues.json last_updated.json
-          git commit -m "Updated Relics.json, RelicValues.json and last_updated.json [GitHub Actions]" || echo "No changes to commit"
+          git commit -m "Auto updated Relics.json, RelicValues.json and last_updated.json [GitHub Actions]" || echo "No changes to commit"
           git push
