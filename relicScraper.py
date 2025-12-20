@@ -71,4 +71,4 @@ if __name__ == "__main__":
     relic_data = parseRelicTable(relic_table)
     saveRelicsToJSON(relic_data)
     print(f"Successfully saved {len(relic_data)} relics to 'Relics.json'")
-    # test 1
+    # test
