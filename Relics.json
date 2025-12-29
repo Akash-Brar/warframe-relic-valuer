@@ -9589,6 +9589,49 @@
     ]
   },
   {
+    "name": "Vanguard P1",
+    "urlName": "vanguard_p1_relic",
+    "vaulted": false,
+    "items": [
+      {
+        "name": "Caliban Prime Chassis Blueprint",
+        "url_name": "caliban_prime_chassis_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Mesa Prime Blueprint",
+        "url_name": "mesa_prime_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Ash Prime Neuroptics Blueprint",
+        "url_name": "ash_prime_neuroptics_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Volt Prime Neuroptics Blueprint",
+        "url_name": "volt_prime_neuroptics_blueprint",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Ember Prime Systems Blueprint",
+        "url_name": "ember_prime_systems_blueprint",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Protea Prime Systems Blueprint",
+        "url_name": "protea_prime_systems_blueprint",
+        "rarity": "Rare",
+        "chance": 2
+      }
+    ]
+  },
+  {
     "name": "Lith V4",
     "urlName": "lith_v4_relic",
     "vaulted": true,
@@ -13846,6 +13889,92 @@
     ]
   },
   {
+    "name": "Vanguard M1",
+    "urlName": "vanguard_m1_relic",
+    "vaulted": false,
+    "items": [
+      {
+        "name": "Ember Prime Neuroptics Blueprint",
+        "url_name": "ember_prime_neuroptics_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Ash Prime Chassis Blueprint",
+        "url_name": "ash_prime_chassis_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Caliban Prime Blueprint",
+        "url_name": "caliban_prime_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Volt Prime Systems Blueprint",
+        "url_name": "volt_prime_systems_blueprint",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Protea Prime Chassis Blueprint",
+        "url_name": "protea_prime_chassis_blueprint",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Mesa Prime Neuroptics Blueprint",
+        "url_name": "mesa_prime_neuroptics_blueprint",
+        "rarity": "Rare",
+        "chance": 2
+      }
+    ]
+  },
+  {
+    "name": "Axi T11",
+    "urlName": "axi_t11_relic",
+    "vaulted": true,
+    "items": [
+      {
+        "name": "Forma Blueprint",
+        "url_name": "forma_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Galatine Prime Blade",
+        "url_name": "galatine_prime_blade",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Burston Prime Blueprint",
+        "url_name": "burston_prime_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Scourge Prime Handle",
+        "url_name": "scourge_prime_handle",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Harrow Prime Neuroptics Blueprint",
+        "url_name": "harrow_prime_neuroptics_blueprint",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Tigris Prime Blueprint",
+        "url_name": "tigris_prime_blueprint",
+        "rarity": "Rare",
+        "chance": 2
+      }
+    ]
+  },
+  {
     "name": "Axi P2",
     "urlName": "axi_p2_relic",
     "vaulted": true,
@@ -13883,6 +14012,49 @@
       {
         "name": "Pyrana Prime Blueprint",
         "url_name": "pyrana_prime_blueprint",
+        "rarity": "Rare",
+        "chance": 2
+      }
+    ]
+  },
+  {
+    "name": "Neo P1",
+    "urlName": "neo_p1_relic",
+    "vaulted": true,
+    "items": [
+      {
+        "name": "Ninkondi Prime Blueprint",
+        "url_name": "ninkondi_prime_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Paris Prime Lower Limb",
+        "url_name": "paris_prime_lower_limb",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Redeemer Prime Blade",
+        "url_name": "redeemer_prime_blade",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Akjagara Prime Receiver",
+        "url_name": "akjagara_prime_receiver",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Rubico Prime Stock",
+        "url_name": "rubico_prime_stock",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Pangolin Prime Blueprint",
+        "url_name": "pangolin_prime_blueprint",
         "rarity": "Rare",
         "chance": 2
       }
@@ -17286,43 +17458,43 @@
     ]
   },
   {
-    "name": "Neo P1",
-    "urlName": "neo_p1_relic",
-    "vaulted": true,
+    "name": "Vanguard C1",
+    "urlName": "vanguard_c1_relic",
+    "vaulted": false,
     "items": [
       {
-        "name": "Ninkondi Prime Blueprint",
-        "url_name": "ninkondi_prime_blueprint",
+        "name": "Protea Prime Blueprint",
+        "url_name": "protea_prime_blueprint",
         "rarity": "Common",
         "chance": 25.33
       },
       {
-        "name": "Paris Prime Lower Limb",
-        "url_name": "paris_prime_lower_limb",
+        "name": "Ember Prime Chassis Blueprint",
+        "url_name": "ember_prime_chassis_blueprint",
         "rarity": "Common",
         "chance": 25.33
       },
       {
-        "name": "Redeemer Prime Blade",
-        "url_name": "redeemer_prime_blade",
+        "name": "Volt Prime Blueprint",
+        "url_name": "volt_prime_blueprint",
         "rarity": "Common",
         "chance": 25.33
       },
       {
-        "name": "Akjagara Prime Receiver",
-        "url_name": "akjagara_prime_receiver",
+        "name": "Mesa Prime Systems Blueprint",
+        "url_name": "mesa_prime_systems_blueprint",
         "rarity": "Uncommon",
         "chance": 11
       },
       {
-        "name": "Rubico Prime Stock",
-        "url_name": "rubico_prime_stock",
+        "name": "Ash Prime Systems Blueprint",
+        "url_name": "ash_prime_systems_blueprint",
         "rarity": "Uncommon",
         "chance": 11
       },
       {
-        "name": "Pangolin Prime Blueprint",
-        "url_name": "pangolin_prime_blueprint",
+        "name": "Caliban Prime Systems Blueprint",
+        "url_name": "caliban_prime_systems_blueprint",
         "rarity": "Rare",
         "chance": 2
       }
@@ -19393,43 +19565,43 @@
     ]
   },
   {
-    "name": "Axi T11",
-    "urlName": "axi_t11_relic",
-    "vaulted": true,
+    "name": "Vanguard E1",
+    "urlName": "vanguard_e1_relic",
+    "vaulted": false,
     "items": [
       {
-        "name": "Forma Blueprint",
-        "url_name": "forma_blueprint",
+        "name": "Protea Prime Neuroptics Blueprint",
+        "url_name": "protea_prime_neuroptics_blueprint",
         "rarity": "Common",
         "chance": 25.33
       },
       {
-        "name": "Galatine Prime Blade",
-        "url_name": "galatine_prime_blade",
+        "name": "Mesa Prime Chassis Blueprint",
+        "url_name": "mesa_prime_chassis_blueprint",
         "rarity": "Common",
         "chance": 25.33
       },
       {
-        "name": "Burston Prime Blueprint",
-        "url_name": "burston_prime_blueprint",
+        "name": "Volt Prime Chassis Blueprint",
+        "url_name": "volt_prime_chassis_blueprint",
         "rarity": "Common",
         "chance": 25.33
       },
       {
-        "name": "Scourge Prime Handle",
-        "url_name": "scourge_prime_handle",
+        "name": "Caliban Prime Neuroptics Blueprint",
+        "url_name": "caliban_prime_neuroptics_blueprint",
         "rarity": "Uncommon",
         "chance": 11
       },
       {
-        "name": "Harrow Prime Neuroptics Blueprint",
-        "url_name": "harrow_prime_neuroptics_blueprint",
+        "name": "Ash Prime Blueprint",
+        "url_name": "ash_prime_blueprint",
         "rarity": "Uncommon",
         "chance": 11
       },
       {
-        "name": "Tigris Prime Blueprint",
-        "url_name": "tigris_prime_blueprint",
+        "name": "Ember Prime Blueprint",
+        "url_name": "ember_prime_blueprint",
         "rarity": "Rare",
         "chance": 2
       }
