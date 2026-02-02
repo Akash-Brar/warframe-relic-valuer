@@ -13975,6 +13975,49 @@
     ]
   },
   {
+    "name": "Neo P1",
+    "urlName": "neo_p1_relic",
+    "vaulted": true,
+    "items": [
+      {
+        "name": "Ninkondi Prime Blueprint",
+        "url_name": "ninkondi_prime_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Paris Prime Lower Limb",
+        "url_name": "paris_prime_lower_limb",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Redeemer Prime Blade",
+        "url_name": "redeemer_prime_blade",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Akjagara Prime Receiver",
+        "url_name": "akjagara_prime_receiver",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Rubico Prime Stock",
+        "url_name": "rubico_prime_stock",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Pangolin Prime Blueprint",
+        "url_name": "pangolin_prime_blueprint",
+        "rarity": "Rare",
+        "chance": 2
+      }
+    ]
+  },
+  {
     "name": "Axi P2",
     "urlName": "axi_p2_relic",
     "vaulted": true,
@@ -14018,45 +14061,57 @@
     ]
   },
   {
-    "name": "Neo P1",
-    "urlName": "neo_p1_relic",
-    "vaulted": true,
+    "name": "Requiem Eterna",
+    "urlName": "requiem_eterna_relic",
+    "vaulted": false,
     "items": [
       {
-        "name": "Ninkondi Prime Blueprint",
-        "url_name": "ninkondi_prime_blueprint",
+        "name": "Khra",
+        "url_name": "khra",
         "rarity": "Common",
         "chance": 25.33
       },
       {
-        "name": "Paris Prime Lower Limb",
-        "url_name": "paris_prime_lower_limb",
+        "name": "Netra",
+        "url_name": "netra",
         "rarity": "Common",
         "chance": 25.33
       },
       {
-        "name": "Redeemer Prime Blade",
-        "url_name": "redeemer_prime_blade",
+        "name": "Fass",
+        "url_name": "fass",
         "rarity": "Common",
         "chance": 25.33
       },
       {
-        "name": "Akjagara Prime Receiver",
-        "url_name": "akjagara_prime_receiver",
-        "rarity": "Uncommon",
-        "chance": 11
+        "name": "Ris",
+        "url_name": "ris",
+        "rarity": "Common",
+        "chance": 25.33
       },
       {
-        "name": "Rubico Prime Stock",
-        "url_name": "rubico_prime_stock",
-        "rarity": "Uncommon",
-        "chance": 11
+        "name": "Vome",
+        "url_name": "vome",
+        "rarity": "Common",
+        "chance": 25.33
       },
       {
-        "name": "Pangolin Prime Blueprint",
-        "url_name": "pangolin_prime_blueprint",
-        "rarity": "Rare",
-        "chance": 2
+        "name": "Jahu",
+        "url_name": "jahu",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Xata",
+        "url_name": "xata",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Lohk",
+        "url_name": "lohk",
+        "rarity": "Common",
+        "chance": 25.33
       }
     ]
   },
