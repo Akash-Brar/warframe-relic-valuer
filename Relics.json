@@ -9591,7 +9591,7 @@
   {
     "name": "Vanguard P1",
     "urlName": "vanguard_p1_relic",
-    "vaulted": false,
+    "vaulted": true,
     "items": [
       {
         "name": "Caliban Prime Chassis Blueprint",
@@ -13891,7 +13891,7 @@
   {
     "name": "Vanguard M1",
     "urlName": "vanguard_m1_relic",
-    "vaulted": false,
+    "vaulted": true,
     "items": [
       {
         "name": "Ember Prime Neuroptics Blueprint",
@@ -17515,7 +17515,7 @@
   {
     "name": "Vanguard C1",
     "urlName": "vanguard_c1_relic",
-    "vaulted": false,
+    "vaulted": true,
     "items": [
       {
         "name": "Protea Prime Blueprint",
@@ -19622,7 +19622,7 @@
   {
     "name": "Vanguard E1",
     "urlName": "vanguard_e1_relic",
-    "vaulted": false,
+    "vaulted": true,
     "items": [
       {
         "name": "Protea Prime Neuroptics Blueprint",
