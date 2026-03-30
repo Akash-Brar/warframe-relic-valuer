@@ -14118,7 +14118,7 @@
   {
     "name": "Requiem IV",
     "urlName": "requiem_iv_relic",
-    "vaulted": false,
+    "vaulted": true,
     "items": [
       {
         "name": "Riven Sliver",
@@ -14161,7 +14161,7 @@
   {
     "name": "Requiem III",
     "urlName": "requiem_iii_relic",
-    "vaulted": false,
+    "vaulted": true,
     "items": [
       {
         "name": "Riven Sliver",
@@ -14204,7 +14204,7 @@
   {
     "name": "Requiem II",
     "urlName": "requiem_ii_relic",
-    "vaulted": false,
+    "vaulted": true,
     "items": [
       {
         "name": "Riven Sliver",
@@ -14247,7 +14247,7 @@
   {
     "name": "Requiem I",
     "urlName": "requiem_i_relic",
-    "vaulted": false,
+    "vaulted": true,
     "items": [
       {
         "name": "Riven Sliver",
