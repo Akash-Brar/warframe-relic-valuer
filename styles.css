@@ -289,6 +289,48 @@ select {
     color: #5b667e;
 }
 
+/* Refinement filter styling */
+#refinement-filter {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffb347' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    appearance: none;
+    padding-right: 36px;
+    min-width: 130px;
+}
+
+/* Item chance display */
+.item-chance {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #ffb347;
+    background: rgba(255, 180, 71, 0.15);
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+.item-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+}
+
+/* Refinement indicator on stats */
+.stat-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+/* Active refinement highlight */
+#refinement-filter option:checked {
+    background: #ffb347;
+    color: #0b0c10;
+}
+
 /* responsive adjustments */
 @media (max-width: 700px) {
     header {
@@ -297,7 +339,7 @@ select {
         text-align: center;
     }
     .search-controls {
-        justify-content: center;
+        flex-wrap: wrap;
     }
     .relic-stats {
         flex-direction: column;
@@ -318,6 +360,14 @@ select {
     }
     .item-values {
         justify-content: flex-start;
+    }
+
+    #refinement-filter {
+        min-width: 120px;
+    }
+
+    .item-info {
+        flex-wrap: wrap;
     }
 }
 

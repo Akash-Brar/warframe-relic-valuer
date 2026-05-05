@@ -1,8 +1,9 @@
-// script.js — refined data display, card redesign logic, lazy load + filtering
+// script.js — refinement selector with dynamic average prices
 document.addEventListener("DOMContentLoaded", () => {
     const relicContainer = document.getElementById("relics-container");
     const searchBar = document.getElementById("search-bar");
     const vaultFilter = document.getElementById("vault-filter");
+    const refinementFilter = document.getElementById("refinement-filter");
     const lastUpdatedDiv = document.getElementById("last-updated");
 
     let relics = [];
@@ -11,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const batchSize = 20;
     let isLoading = false;
     let currentObserver = null;
+    let currentRefinement = "intact"; // default refinement
 
     // ---------- fetch relic data ----------
     fetch("RelicValues.json")
@@ -55,9 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // helper: get rarity class and remove text tag
+    // helper: get rarity class based on chance
     function getRarityClass(chance) {
-        // using exact values from typical warframe relic drop chances
         if (Math.abs(chance - 2.0) < 0.01) return "rare";
         if (Math.abs(chance - 11.0) < 0.01) return "uncommon";
         if (Math.abs(chance - 25.33) < 0.01 || Math.abs(chance - 25.0) < 0.5) return "common";
@@ -66,29 +67,53 @@ document.addEventListener("DOMContentLoaded", () => {
         return "rare";
     }
 
-    // CREATE MODERN CARD — with tiered backgrounds (Gold/Silver/Bronze) and no text tags
+    // Get the appropriate average value based on refinement
+    function getRefinementAverage(relic, type, refinement) {
+        const avgKey = `${refinement}Avg${type === 'sell' ? 'Sell' : 'Buy'}`;
+        return relic[avgKey] || (type === 'sell' ? relic.totalSellValue : relic.totalBuyValue);
+    }
+
+    // CREATE MODERN CARD with dynamic refinement averages
     function createRelicCard(relic) {
         const card = document.createElement("div");
         card.classList.add("relic-card");
 
-        // format numbers (platinum)
-        const totalSell = relic.totalSellValue?.toFixed?.(1) ?? relic.totalSellValue ?? 0;
-        const avgSell = relic.avgSellValue?.toFixed?.(1) ?? relic.avgSellValue ?? 0;
-        const totalBuy = relic.totalBuyValue?.toFixed?.(1) ?? relic.totalBuyValue ?? 0;
-        const avgBuy = relic.avgBuyValue?.toFixed?.(1) ?? relic.avgBuyValue ?? 0;
+        // Get the weighted average for the selected refinement
+        const refinementAvgSell = getRefinementAverage(relic, 'sell', currentRefinement);
+        const refinementAvgBuy = getRefinementAverage(relic, 'buy', currentRefinement);
+        
+        // Get the TOTAL (sum of all 6 items without weighting)
+        // This should be consistent across all refinements since it's just the sum of raw item values
+        const totalSell = relic.totalSellValue;
+        const totalBuy = relic.totalBuyValue;
+        
+        // The weighted average for the refinement
+        const avgSell = refinementAvgSell;
+        const avgBuy = refinementAvgBuy;
+
+        // Format numbers
+        const formattedTotalSell = typeof totalSell === 'number' ? totalSell.toFixed(1) : totalSell;
+        const formattedAvgSell = typeof avgSell === 'number' ? avgSell.toFixed(1) : avgSell;
+        const formattedTotalBuy = typeof totalBuy === 'number' ? totalBuy.toFixed(1) : totalBuy;
+        const formattedAvgBuy = typeof avgBuy === 'number' ? avgBuy.toFixed(1) : avgBuy;
 
         // vault status
         const vaultStatusClass = relic.vaulted ? "vaulted" : "not-vaulted";
         const vaultText = relic.vaulted ? "VAULTED" : "UNVAULTED";
 
-        // items HTML — NO text rarity badge, only background color classes
+        // refinement display text
+        const refinementDisplay = {
+            'intact': 'Intact',
+            'exceptional': 'Exceptional',
+            'flawless': 'Flawless',
+            'radiant': 'Radiant'
+        }[currentRefinement];
+
+        // items HTML
         const itemsHTML = relic.items
             ?.sort((a, b) => (a.chance ?? 0) - (b.chance ?? 0))
             .map(item => {
                 const rarityClass = getRarityClass(item.chance);
-                const sellVal = item.sellValue?.toFixed?.(1) ?? item.sellValue ?? 0;
-                const buyVal = item.buyValue?.toFixed?.(1) ?? item.buyValue ?? 0;
-                // applying tier-specific class: item-rare, item-uncommon, or item-common
                 let tierClass = "";
                 if (rarityClass === "rare") tierClass = "item-rare";
                 else if (rarityClass === "uncommon") tierClass = "item-uncommon";
@@ -98,11 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="item ${tierClass}">
                         <div class="item-info">
                             <span class="item-name">${escapeHtml(item.name)}</span>
+                            <span class="item-chance">${item.chance?.toFixed?.(1) ?? item.chance}%</span>
                         </div>
                         <div class="item-values">
-                            <span class="sell-value">${sellVal}p</span>
+                            <span class="sell-value">${(item.sellValue?.toFixed?.(1) ?? item.sellValue ?? 0)}p</span>
                             <span class="separator">/</span>
-                            <span class="buy-value">${buyVal}p</span>
+                            <span class="buy-value">${(item.buyValue?.toFixed?.(1) ?? item.buyValue ?? 0)}p</span>
                         </div>
                     </div>
                 `;
@@ -115,12 +141,14 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="relic-stats">
                 <div class="stat-block">
-                    <div class="stat-label">💎 SELL</div>
-                    <div class="stat-value sell">${totalSell}p <span style="font-size:0.7rem;">Avg: ${avgSell}p</span></div>
+                    <div class="stat-label">💎 SELL VALUE</div>
+                    <div class="stat-value sell">${formattedTotalSell}p</div>
+                    <div class="stat-sub">${refinementDisplay} Avg: ${formattedAvgSell}p</div>
                 </div>
                 <div class="stat-block">
-                    <div class="stat-label">📦 BUY</div>
-                    <div class="stat-value buy">${totalBuy}p <span style="font-size:0.7rem;">Avg: ${avgBuy}p</span></div>
+                    <div class="stat-label">📦 BUY VALUE</div>
+                    <div class="stat-value buy">${formattedTotalBuy}p</div>
+                    <div class="stat-sub">${refinementDisplay} Avg: ${formattedAvgBuy}p</div>
                 </div>
             </div>
             <div class="items-container">
@@ -163,7 +191,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         isLoading = false;
 
-        // after loading, (re)set up observer for last card
         setupScrollObserver();
     }
 
@@ -190,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         relicContainer.innerHTML = "";
         loadedCount = 0;
-        loadMoreRelics(); // start loading fresh batch
+        loadMoreRelics();
     }
 
     function loadInitialRelics() {
@@ -199,17 +226,18 @@ document.addEventListener("DOMContentLoaded", () => {
         loadMoreRelics();
     }
 
-    // filtering logic (with search + vault)
+    // filtering logic (search + vault + refinement)
     function applyFilters() {
         const searchText = searchBar.value.toLowerCase().trim();
         const vaultState = vaultFilter.value;
+        currentRefinement = refinementFilter.value;
 
         displayedRelics = relics.filter(relic => {
             // search match: relic name or any item inside
             let matchesSearch = true;
             if (searchText !== "") {
                 const nameMatch = relic.name.toLowerCase().includes(searchText);
-                const itemMatch = relic.items.some(item => item.name.toLowerCase().includes(searchText));
+                const itemMatch = relic.items && relic.items.some(item => item.name.toLowerCase().includes(searchText));
                 matchesSearch = nameMatch || itemMatch;
             }
 
@@ -241,6 +269,11 @@ document.addEventListener("DOMContentLoaded", () => {
         applyFilters();
     }
 
+    function onRefinementChange() {
+        applyFilters();
+    }
+
     searchBar.addEventListener("input", onSearchInput);
     vaultFilter.addEventListener("change", onVaultChange);
+    refinementFilter.addEventListener("change", onRefinementChange);
 });
