@@ -331,6 +331,23 @@ select {
     color: #0b0c10;
 }
 
+.stat-sub {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #9aa4bf;
+    margin-top: 4px;
+    letter-spacing: 0.3px;
+}
+
+.stat-block {
+    flex: 1;
+    text-align: center;
+    background: #10131e;
+    border-radius: 20px;
+    padding: 8px 4px;
+    transition: all 0.1s;
+}
+
 /* responsive adjustments */
 @media (max-width: 700px) {
     header {
