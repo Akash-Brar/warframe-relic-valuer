@@ -104,7 +104,9 @@ def addValuesToRelics(intactRelics, itemValues):
             totalBuyValue += buyValue
             totalSellValue += sellValue
         relic["totalBuyValue"] = round(totalBuyValue, 1)
+        relic["avgBuyValue"] = round(totalBuyValue/6, 1)
         relic["totalSellValue"] = round(totalSellValue, 1)
+        relic["avgSellValue"] = round(totalSellValue/6, 1)
     return intactRelics
 
 
