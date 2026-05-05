@@ -1,3 +1,4 @@
+// script.js — refined data display, card redesign logic, lazy load + filtering
 document.addEventListener("DOMContentLoaded", () => {
     const relicContainer = document.getElementById("relics-container");
     const searchBar = document.getElementById("search-bar");
@@ -6,117 +7,240 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let relics = [];
     let displayedRelics = [];
-    const batchSize = 20;
     let loadedCount = 0;
+    const batchSize = 20;
+    let isLoading = false;
+    let currentObserver = null;
 
-    fetch("RelicValues.json") 
-        .then(response => response.json())
+    // ---------- fetch relic data ----------
+    fetch("RelicValues.json")
+        .then(response => {
+            if (!response.ok) throw new Error("RelicValues.json not found");
+            return response.json();
+        })
         .then(data => {
+            if (!Array.isArray(data)) throw new Error("Invalid relic data");
+            // sort by total sell value descending
             relics = data.sort((a, b) => b.totalSellValue - a.totalSellValue);
-            addPositions(relics); // Add positions based on sorted order
-            displayedRelics = relics;
+            addPositions(relics);
+            displayedRelics = [...relics];
             loadInitialRelics();
+        })
+        .catch(err => {
+            console.error("Failed to load relic data:", err);
+            relicContainer.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:3rem;">⚠️ Could not load relic data. Make sure RelicValues.json exists.</div>`;
         });
 
-    fetch("last_updated.json")  // Assuming the second JSON is named "last_updated.json"
-        .then(response => response.json())
+    // fetch last updated timestamp
+    fetch("last_updated.json")
+        .then(response => {
+            if (!response.ok) throw new Error("No timestamp file");
+            return response.json();
+        })
         .then(data => {
-            lastUpdatedDiv.textContent = `Last updated on: ${data.last_updated}`;  // Insert date and time
+            if (data && data.last_updated) {
+                lastUpdatedDiv.textContent = `📅 Last updated: ${data.last_updated}`;
+            } else {
+                lastUpdatedDiv.textContent = `📡 Prices are live`;
+            }
+        })
+        .catch(() => {
+            lastUpdatedDiv.textContent = `📡 Market data: recent`;
         });
 
+    // assign sorted ranking (position)
     function addPositions(sortedRelics) {
-        sortedRelics.forEach((relic, index) => {
-            relic.position = index + 1; // Assign position based on sorted order
+        sortedRelics.forEach((relic, idx) => {
+            relic.position = idx + 1;
         });
     }
 
-    function loadInitialRelics() {
-        relicContainer.innerHTML = ""; // Clear before reloading
-        loadedCount = 0;
-        loadMoreRelics();
+    // helper: get rarity class and remove text tag
+    function getRarityClass(chance) {
+        // using exact values from typical warframe relic drop chances
+        if (Math.abs(chance - 2.0) < 0.01) return "rare";
+        if (Math.abs(chance - 11.0) < 0.01) return "uncommon";
+        if (Math.abs(chance - 25.33) < 0.01 || Math.abs(chance - 25.0) < 0.5) return "common";
+        if (chance > 20) return "common";
+        if (chance > 8) return "uncommon";
+        return "rare";
     }
 
+    // CREATE MODERN CARD — with tiered backgrounds (Gold/Silver/Bronze) and no text tags
     function createRelicCard(relic) {
         const card = document.createElement("div");
         card.classList.add("relic-card");
 
+        // format numbers (platinum)
+        const totalSell = relic.totalSellValue?.toFixed?.(1) ?? relic.totalSellValue ?? 0;
+        const avgSell = relic.avgSellValue?.toFixed?.(1) ?? relic.avgSellValue ?? 0;
+        const totalBuy = relic.totalBuyValue?.toFixed?.(1) ?? relic.totalBuyValue ?? 0;
+        const avgBuy = relic.avgBuyValue?.toFixed?.(1) ?? relic.avgBuyValue ?? 0;
+
+        // vault status
+        const vaultStatusClass = relic.vaulted ? "vaulted" : "not-vaulted";
+        const vaultText = relic.vaulted ? "VAULTED" : "UNVAULTED";
+
+        // items HTML — NO text rarity badge, only background color classes
+        const itemsHTML = relic.items
+            ?.sort((a, b) => (a.chance ?? 0) - (b.chance ?? 0))
+            .map(item => {
+                const rarityClass = getRarityClass(item.chance);
+                const sellVal = item.sellValue?.toFixed?.(1) ?? item.sellValue ?? 0;
+                const buyVal = item.buyValue?.toFixed?.(1) ?? item.buyValue ?? 0;
+                // applying tier-specific class: item-rare, item-uncommon, or item-common
+                let tierClass = "";
+                if (rarityClass === "rare") tierClass = "item-rare";
+                else if (rarityClass === "uncommon") tierClass = "item-uncommon";
+                else tierClass = "item-common";
+                
+                return `
+                    <div class="item ${tierClass}">
+                        <div class="item-info">
+                            <span class="item-name">${escapeHtml(item.name)}</span>
+                        </div>
+                        <div class="item-values">
+                            <span class="sell-value">${sellVal}p</span>
+                            <span class="separator">/</span>
+                            <span class="buy-value">${buyVal}p</span>
+                        </div>
+                    </div>
+                `;
+            }).join("") || '<div class="item item-common">No item data</div>';
+
         card.innerHTML = `
             <div class="relic-header">
-                <h2>${relic.position}. ${relic.name}</h2>
-                <p class="vault-status ${relic.vaulted ? "vaulted" : "not-vaulted"}">
-                    ${relic.vaulted ? "Vaulted" : "Available"}
-                </p>
+                <h2>${relic.position}. ${escapeHtml(relic.name)}</h2>
+                <span class="vault-status ${vaultStatusClass}">${vaultText}</span>
             </div>
-            <p><strong>Total Sell Price:</strong> ${relic.totalSellValue}p</p>
-            <p><strong>Total Buy Price:</strong> ${relic.totalBuyValue}p</p>
+            <div class="relic-stats">
+                <div class="stat-block">
+                    <div class="stat-label">💎 SELL</div>
+                    <div class="stat-value sell">${totalSell}p <span style="font-size:0.7rem;">Avg: ${avgSell}p</span></div>
+                </div>
+                <div class="stat-block">
+                    <div class="stat-label">📦 BUY</div>
+                    <div class="stat-value buy">${totalBuy}p <span style="font-size:0.7rem;">Avg: ${avgBuy}p</span></div>
+                </div>
+            </div>
             <div class="items-container">
-                ${relic.items
-                    .sort((a, b) => a.chance - b.chance) 
-                    .map(
-                        item => `
-                            <div class="item">
-                                <p>${item.name} (${getRarity(item.chance)})</p>
-                                <p class="item-values">Sell: ${item.sellValue}p | Buy: ${item.buyValue}p</p>
-                            </div>
-                        `
-                    ).join("")}
+                ${itemsHTML}
             </div>
         `;
 
-        relicContainer.appendChild(card);
+        return card;
     }
 
-    function getRarity(chance) {
-        if (chance === 2) return "Rare";
-        if (chance === 11) return "Uncommon";
-        if (chance === 25.33) return "Common";
-        return "Unknown";
+    // simple XSS protection
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
     }
 
-    function observeLastCard() {
-        const relicCards = document.querySelectorAll(".relic-card");
-        const lastCard = relicCards[relicCards.length - 1];
+    // load more relics with lazy intersection
+    function loadMoreRelics() {
+        if (isLoading) return;
+        isLoading = true;
 
+        const fragment = document.createDocumentFragment();
+        let added = 0;
+        const end = Math.min(loadedCount + batchSize, displayedRelics.length);
+        for (let i = loadedCount; i < end; i++) {
+            const card = createRelicCard(displayedRelics[i]);
+            fragment.appendChild(card);
+            added++;
+        }
+        if (added > 0) {
+            relicContainer.appendChild(fragment);
+            loadedCount += added;
+        }
+        isLoading = false;
+
+        // after loading, (re)set up observer for last card
+        setupScrollObserver();
+    }
+
+    let observer = null;
+    function setupScrollObserver() {
+        if (observer) observer.disconnect();
+        const allCards = document.querySelectorAll(".relic-card");
+        if (allCards.length === 0 || loadedCount >= displayedRelics.length) return;
+        const lastCard = allCards[allCards.length - 1];
         if (!lastCard) return;
 
-        const observer = new IntersectionObserver(entries => {
-            const lastCardEntry = entries[0];
-
-            if (lastCardEntry.isIntersecting) {
-                observer.unobserve(lastCard);
+        observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !isLoading && loadedCount < displayedRelics.length) {
                 loadMoreRelics();
             }
-        });
-
+        }, { threshold: 0.2, rootMargin: "0px 0px 120px 0px" });
         observer.observe(lastCard);
     }
 
-    function loadMoreRelics() {
-        for (let i = loadedCount; i < loadedCount + batchSize && i < displayedRelics.length; i++) {
-            createRelicCard(displayedRelics[i]);
+    function resetAndReload() {
+        if (observer) {
+            observer.disconnect();
+            observer = null;
         }
-        loadedCount += batchSize;
-        observeLastCard();
+        relicContainer.innerHTML = "";
+        loadedCount = 0;
+        loadMoreRelics(); // start loading fresh batch
     }
 
-    function filterRelics() {
-        let searchText = searchBar.value.toLowerCase();
-        let vaultStatus = vaultFilter.value;
+    function loadInitialRelics() {
+        loadedCount = 0;
+        relicContainer.innerHTML = "";
+        loadMoreRelics();
+    }
+
+    // filtering logic (with search + vault)
+    function applyFilters() {
+        const searchText = searchBar.value.toLowerCase().trim();
+        const vaultState = vaultFilter.value;
 
         displayedRelics = relics.filter(relic => {
-            let matchesSearch = relic.name.toLowerCase().includes(searchText) ||
-                relic.items.some(item => item.name.toLowerCase().includes(searchText));
+            // search match: relic name or any item inside
+            let matchesSearch = true;
+            if (searchText !== "") {
+                const nameMatch = relic.name.toLowerCase().includes(searchText);
+                const itemMatch = relic.items.some(item => item.name.toLowerCase().includes(searchText));
+                matchesSearch = nameMatch || itemMatch;
+            }
 
-            let matchesVault = (vaultStatus === "all") ||
-                (vaultStatus === "vaulted" && relic.vaulted) ||
-                (vaultStatus === "not-vaulted" && !relic.vaulted);
+            let matchesVault = true;
+            if (vaultState === "vaulted") {
+                matchesVault = relic.vaulted === true;
+            } else if (vaultState === "not-vaulted") {
+                matchesVault = relic.vaulted === false;
+            } else {
+                matchesVault = true;
+            }
 
             return matchesSearch && matchesVault;
         });
 
-        loadInitialRelics();
+        resetAndReload();
     }
 
-    searchBar.addEventListener("input", filterRelics);
-    vaultFilter.addEventListener("change", filterRelics);
+    // debounced search for better UX
+    let debounceTimer;
+    function onSearchInput() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            applyFilters();
+        }, 280);
+    }
+
+    function onVaultChange() {
+        applyFilters();
+    }
+
+    searchBar.addEventListener("input", onSearchInput);
+    vaultFilter.addEventListener("change", onVaultChange);
 });

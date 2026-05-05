@@ -1,123 +1,344 @@
+/* styles.css — refined card layout, reduced visual clutter */
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #111;
-    color: white;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    background-color: #0b0c10;
+    color: #eef2ff;
     text-align: center;
     margin: 0;
-    padding: 20px;
+    padding: 24px 20px;
 }
 
 header {
-    margin-bottom: 20px;
+    margin-bottom: 28px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 16px;
+    background: #0f1117;
+    padding: 16px 28px;
+    border-radius: 32px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid #2a2e3a;
+}
+
+header h1 {
+    font-size: 1.7rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #e6b422, #ffd966);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    margin: 0;
+    letter-spacing: -0.3px;
+}
+
+.search-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 input, select {
-    padding: 10px;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
-    background-color: #222;
-    color: white;
-    font-size: 16px;
+    padding: 10px 16px;
+    border: 1px solid #2c313f;
+    border-radius: 48px;
+    background-color: #1e212b;
+    color: #f0f3fa;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    outline: none;
+    backdrop-filter: blur(2px);
 }
 
 input {
-    width: 250px;
+    width: 260px;
+}
+
+input:focus, select:focus {
+    border-color: #ffb347;
+    box-shadow: 0 0 0 2px rgba(255, 180, 71, 0.3);
+    background-color: #282e3c;
 }
 
 select {
     cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffb347' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
     appearance: none;
-    background-color: #222;
-    border: 1px solid #444;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-select:focus {
-    outline: none;
-    border-color: #00aaff;
-}
-
-select::-ms-expand {
-    display: none; /* Hide dropdown arrow in IE */
+    padding-right: 36px;
 }
 
 .last-updated {
-    margin-top: 20px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #bbb;
+    margin-top: -8px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #8e9aaf;
+    text-align: center;
+    background: #13161f80;
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 60px;
+    backdrop-filter: blur(4px);
 }
 
+/* GRID — cleaner, responsive, cards breathe better */
 #relics-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 15px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 22px;
+    padding: 12px 4px 32px 4px;
 }
 
+/* ✨ CARD REDESIGN — compact, minimal, classy */
 .relic-card {
-    background-color: #222;
-    border: 1px solid #444;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-    text-align: left;
-    position: relative;
+    background: linear-gradient(145deg, #171b24 0%, #11141d 100%);
+    border-radius: 28px;
+    border: 1px solid #2a2f3d;
+    padding: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    backdrop-filter: blur(2px);
 }
 
-.relic-card p{
-    margin: 10px;
+.relic-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 28px -12px black;
+    border-color: #ffb34755;
 }
 
+/* compact header with position and name */
 .relic-header {
     display: flex;
+    align-items: baseline;
     justify-content: space-between;
-    align-items: center;
+    background: #0e111b;
+    padding: 14px 18px 10px 18px;
+    border-bottom: 1px solid #2a2f3f;
 }
 
+.relic-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.2px;
+    color: #ffde9c;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.relic-header h2::before {
+    content: "✦";
+    font-size: 1rem;
+    color: #ffb347;
+    font-weight: 400;
+}
+
+/* vault badge refined */
 .vault-status {
-    font-weight: bold;
-    padding: 5px 10px;
-    border-radius: 5px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #1e212c;
 }
 
 .vaulted {
-    color: red;
-    background-color: rgba(255, 0, 0, 0.2);
+    color: #ff8a7a;
+    background: rgba(255, 80, 60, 0.12);
+    border: 0.5px solid #ff5e4a;
 }
 
 .not-vaulted {
-    color: green;
-    background-color: rgba(0, 255, 0, 0.2);
+    color: #9bffa3;
+    background: rgba(80, 200, 90, 0.1);
+    border: 0.5px solid #5bcb6e;
 }
 
+/* compact stats row — combines total & average elegantly */
+.relic-stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    background: #0b0e14;
+    padding: 12px 18px;
+    border-bottom: 1px solid #262c38;
+}
+
+.stat-block {
+    flex: 1;
+    text-align: center;
+    background: #10131e;
+    border-radius: 20px;
+    padding: 6px 4px;
+    transition: all 0.1s;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    color: #9aa4bf;
+}
+
+.stat-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffdc97;
+    line-height: 1.3;
+}
+
+.stat-value.sell {
+    color: #6bcbff;
+}
+
+.stat-value.buy {
+    color: #ffb07c;
+}
+
+/* items section — with tiered background colors (Gold, Silver, Bronze) */
 .items-container {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    margin-top: 10px;
+    gap: 8px;
+    padding: 14px 16px 18px 16px;
+    background: #0c0f17;
 }
 
+/* Base item style - no text tags for rarity */
 .item {
-    background-color: #333;
-    padding: 8px;
-    border-radius: 5px;
-    text-align: left;
+    border-radius: 18px;
+    padding: 8px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    transition: 0.15s linear;
+    border-left: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+/* RARE: Gold background */
+.item-rare {
+    background: linear-gradient(135deg, #4a3800 0%, #2a2500 100%);
+    border-left-color: #ffd700;
+    box-shadow: 0 2px 6px rgba(255, 215, 0, 0.2);
+}
+
+/* UNCOMMON: Silver / metallic background */
+.item-uncommon {
+    background: linear-gradient(135deg, #3a404e 0%, #262b36 100%);
+    border-left-color: #c0c0c0;
+    box-shadow: 0 1px 4px rgba(192, 192, 192, 0.15);
+}
+
+/* COMMON: Bronze / earthy background */
+.item-common {
+    background: linear-gradient(135deg, #4a3420 0%, #2e241a 100%);
+    border-left-color: #cd7f32;
+    box-shadow: 0 1px 4px rgba(205, 127, 50, 0.15);
+}
+
+.item:hover {
+    filter: brightness(1.08);
+    transform: translateX(2px);
+}
+
+.item-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.item-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: -0.2px;
+    color: #f2f4ff;
 }
 
 .item-values {
-    color: #00aaff;
-    font-weight: bold;
+    display: flex;
+    gap: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
 }
 
-.hidden {
-    display: none;
+.sell-value {
+    color: #68d0ff;
+}
+
+.buy-value {
+    color: #ffae70;
+}
+
+.separator {
+    color: #5b667e;
+}
+
+/* responsive adjustments */
+@media (max-width: 700px) {
+    header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    .search-controls {
+        justify-content: center;
+    }
+    .relic-stats {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .stat-block {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 14px;
+    }
+    .stat-label {
+        margin-bottom: 0;
+    }
+    .item {
+        flex-direction: column;
+        gap: 6px;
+    }
+    .item-values {
+        justify-content: flex-start;
+    }
+}
+
+/* loading / empty state subtle */
+#relics-container:empty::after {
+    content: "✨ Loading relics...";
+    display: block;
+    text-align: center;
+    padding: 60px;
+    color: #8e9cb0;
+    font-size: 1rem;
+}
+
+/* scrollbar dark */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #11141c;
+}
+::-webkit-scrollbar-thumb {
+    background: #3a4055;
+    border-radius: 10px;
 }
