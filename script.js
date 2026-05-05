@@ -1,9 +1,10 @@
-// script.js — refinement selector with dynamic average prices
+// script.js — refinement selector with sorting and dynamic average prices
 document.addEventListener("DOMContentLoaded", () => {
     const relicContainer = document.getElementById("relics-container");
     const searchBar = document.getElementById("search-bar");
     const vaultFilter = document.getElementById("vault-filter");
     const refinementFilter = document.getElementById("refinement-filter");
+    const sortFilter = document.getElementById("sort-filter");
     const lastUpdatedDiv = document.getElementById("last-updated");
 
     let relics = [];
@@ -12,7 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const batchSize = 20;
     let isLoading = false;
     let currentObserver = null;
-    let currentRefinement = "intact"; // default refinement
+    let currentRefinement = "intact";
+    let currentSort = "total-sell-desc";
 
     // ---------- fetch relic data ----------
     fetch("RelicValues.json")
@@ -22,10 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(data => {
             if (!Array.isArray(data)) throw new Error("Invalid relic data");
-            // sort by total sell value descending
-            relics = data.sort((a, b) => b.totalSellValue - a.totalSellValue);
-            addPositions(relics);
+            relics = data;
             displayedRelics = [...relics];
+            applySort(); // Apply initial sort
+            addPositions(displayedRelics);
             loadInitialRelics();
         })
         .catch(err => {
@@ -57,6 +59,63 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Get the appropriate average value based on refinement
+    function getRefinementAverage(relic, type, refinement) {
+        const avgKey = `${refinement}Avg${type === 'sell' ? 'Sell' : 'Buy'}`;
+        return relic[avgKey] || (type === 'sell' ? relic.totalSellValue : relic.totalBuyValue);
+    }
+
+    // Sort relics based on current sort selection
+    function applySort() {
+        if (!displayedRelics.length) return;
+        
+        // Parse the sort value correctly
+        // Examples: "total-sell-desc", "avg-buy-asc"
+        const parts = currentSort.split('-');
+        const sortOrder = parts.pop(); // Last part is always 'asc' or 'desc'
+        const sortType = parts.join('-'); // Join the remaining parts as the sort type
+        
+        const isDescending = sortOrder === 'desc';
+        
+        console.log(`Sorting by: ${sortType}, Descending: ${isDescending}`); // Debug log
+        
+        displayedRelics.sort((a, b) => {
+            let valueA, valueB;
+            
+            switch(sortType) {
+                case 'total-sell':
+                    valueA = a.totalSellValue || 0;
+                    valueB = b.totalSellValue || 0;
+                    break;
+                case 'total-buy':
+                    valueA = a.totalBuyValue || 0;
+                    valueB = b.totalBuyValue || 0;
+                    break;
+                case 'avg-sell':
+                    valueA = getRefinementAverage(a, 'sell', currentRefinement) || 0;
+                    valueB = getRefinementAverage(b, 'sell', currentRefinement) || 0;
+                    break;
+                case 'avg-buy':
+                    valueA = getRefinementAverage(a, 'buy', currentRefinement) || 0;
+                    valueB = getRefinementAverage(b, 'buy', currentRefinement) || 0;
+                    break;
+                default:
+                    console.warn(`Unknown sort type: ${sortType}, defaulting to total-sell`);
+                    valueA = a.totalSellValue || 0;
+                    valueB = b.totalSellValue || 0;
+            }
+            
+            if (isDescending) {
+                return valueB - valueA;
+            } else {
+                return valueA - valueB;
+            }
+        });
+        
+        // Reassign positions after sorting
+        addPositions(displayedRelics);
+    }
+
     // helper: get rarity class based on chance
     function getRarityClass(chance) {
         if (Math.abs(chance - 2.0) < 0.01) return "rare";
@@ -65,12 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (chance > 20) return "common";
         if (chance > 8) return "uncommon";
         return "rare";
-    }
-
-    // Get the appropriate average value based on refinement
-    function getRefinementAverage(relic, type, refinement) {
-        const avgKey = `${refinement}Avg${type === 'sell' ? 'Sell' : 'Buy'}`;
-        return relic[avgKey] || (type === 'sell' ? relic.totalSellValue : relic.totalBuyValue);
     }
 
     // CREATE MODERN CARD with dynamic refinement averages
@@ -83,7 +136,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const refinementAvgBuy = getRefinementAverage(relic, 'buy', currentRefinement);
         
         // Get the TOTAL (sum of all 6 items without weighting)
-        // This should be consistent across all refinements since it's just the sum of raw item values
         const totalSell = relic.totalSellValue;
         const totalBuy = relic.totalBuyValue;
         
@@ -226,13 +278,16 @@ document.addEventListener("DOMContentLoaded", () => {
         loadMoreRelics();
     }
 
-    // filtering logic (search + vault + refinement)
+    // filtering logic (search + vault + refinement + sort)
     function applyFilters() {
         const searchText = searchBar.value.toLowerCase().trim();
         const vaultState = vaultFilter.value;
         currentRefinement = refinementFilter.value;
 
-        displayedRelics = relics.filter(relic => {
+        console.log(`Applying filters - Search: "${searchText}", Vault: ${vaultState}, Refinement: ${currentRefinement}`); // Debug log
+
+        // First filter by search and vault
+        let filteredRelics = relics.filter(relic => {
             // search match: relic name or any item inside
             let matchesSearch = true;
             if (searchText !== "") {
@@ -252,7 +307,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
             return matchesSearch && matchesVault;
         });
+        
+        displayedRelics = filteredRelics;
+        
+        // Apply sorting
+        applySort();
+        
+        console.log(`Filtered to ${displayedRelics.length} relics`); // Debug log
+        
+        resetAndReload();
+    }
 
+    // Handle sort changes
+    function onSortChange() {
+        console.log(`Sort changed to: ${sortFilter.value}`); // Debug log
+        currentSort = sortFilter.value;
+        applySort();
         resetAndReload();
     }
 
@@ -276,4 +346,13 @@ document.addEventListener("DOMContentLoaded", () => {
     searchBar.addEventListener("input", onSearchInput);
     vaultFilter.addEventListener("change", onVaultChange);
     refinementFilter.addEventListener("change", onRefinementChange);
+    sortFilter.addEventListener("change", onSortChange);
+    
+    // Initial debug to check if elements exist
+    console.log("Script loaded, elements found:", {
+        searchBar: !!searchBar,
+        vaultFilter: !!vaultFilter,
+        refinementFilter: !!refinementFilter,
+        sortFilter: !!sortFilter
+    });
 });
