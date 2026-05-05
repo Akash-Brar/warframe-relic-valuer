@@ -92,23 +92,49 @@ def getValues(intactRelics):
 
     return fetchedItems
 
-def addValuesToRelics(intactRelics, itemValues):
-    for relic in intactRelics:
-        totalBuyValue = 0
-        totalSellValue = 0
+def addValuesToRelics(intact_relics, item_values):
+    # Define refinement tier probabilities once
+    refinement_probs = {
+        "intact": {"Rare": 0.02, "Uncommon": 0.11, "Common": 0.2533},
+        "exceptional": {"Rare": 0.04, "Uncommon": 0.13, "Common": 0.2333},
+        "flawless": {"Rare": 0.06, "Uncommon": 0.17, "Common": 0.20},
+        "radiant": {"Rare": 0.10, "Uncommon": 0.20, "Common": 0.1667}
+    }
+    
+    for relic in intact_relics:
+        # Initialize accumulators
+        totals = {"buy": 0, "sell": 0}
+        tier_averages = {
+            tier: {"buy": 0, "sell": 0} 
+            for tier in refinement_probs.keys()
+        }
+        
         for item in relic["items"]:
-            buyValue = itemValues[item["name"]]["buyValue"]
-            sellValue = itemValues[item["name"]]["sellValue"]
-            item["buyValue"] = buyValue
-            item["sellValue"] = sellValue
-            totalBuyValue += buyValue
-            totalSellValue += sellValue
-        relic["totalBuyValue"] = round(totalBuyValue, 1)
-        relic["avgBuyValue"] = round(totalBuyValue/6, 1)
-        relic["totalSellValue"] = round(totalSellValue, 1)
-        relic["avgSellValue"] = round(totalSellValue/6, 1)
-    return intactRelics
-
+            # Get item values
+            buy_value = item_values[item["name"]]["buyValue"]
+            sell_value = item_values[item["name"]]["sellValue"]
+            item["buyValue"] = buy_value
+            item["sellValue"] = sell_value
+            
+            # Update totals
+            totals["buy"] += buy_value
+            totals["sell"] += sell_value
+            
+            # Calculate and accumulate for each refinement tier
+            for tier, probs in refinement_probs.items():
+                multiplier = probs[item["rarity"]]
+                tier_averages[tier]["buy"] += buy_value * multiplier
+                tier_averages[tier]["sell"] += sell_value * multiplier
+        
+        # Store results in relic
+        relic["totalBuyValue"] = round(totals["buy"], 1)
+        relic["totalSellValue"] = round(totals["sell"], 1)
+        
+        for tier, averages in tier_averages.items():
+            relic[f"{tier}AvgBuy"] = round(averages["buy"], 1)
+            relic[f"{tier}AvgSell"] = round(averages["sell"], 1)
+    
+    return intact_relics
 
 # Logs the time the script finishes, and stores it into a json file
 def logTime():
