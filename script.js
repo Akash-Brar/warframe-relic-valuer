@@ -1,4 +1,3 @@
-// script.js — refinement selector with sorting and dynamic average prices
 document.addEventListener("DOMContentLoaded", () => {
     const relicContainer = document.getElementById("relics-container");
     const searchBar = document.getElementById("search-bar");
@@ -43,13 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(data => {
             if (data && data.last_updated) {
-                lastUpdatedDiv.textContent = `📅 Last updated: ${data.last_updated}`;
+                lastUpdatedDiv.textContent = `Last updated: ${data.last_updated}`;
             } else {
-                lastUpdatedDiv.textContent = `📡 Prices are live`;
+                lastUpdatedDiv.textContent = `Prices are live`;
             }
         })
         .catch(() => {
-            lastUpdatedDiv.textContent = `📡 Market data: recent`;
+            lastUpdatedDiv.textContent = `Market data: recent`;
         });
 
     // assign sorted ranking (position)
@@ -118,15 +117,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // helper: get rarity class based on chance
     function getRarityClass(chance) {
+        // Handle Requiem relic chance (9.5%)
+        if (Math.abs(chance - 9.5) < 0.01) return "common";
+        
+        // Standard Warframe relic chances
         if (Math.abs(chance - 2.0) < 0.01) return "rare";
         if (Math.abs(chance - 11.0) < 0.01) return "uncommon";
         if (Math.abs(chance - 25.33) < 0.01 || Math.abs(chance - 25.0) < 0.5) return "common";
+        
+        // Fallback logic for any other values
         if (chance > 20) return "common";
         if (chance > 8) return "uncommon";
         return "rare";
     }
 
-    // CREATE MODERN CARD with dynamic refinement averages
+    //  Cad creation
     function createRelicCard(relic) {
         const card = document.createElement("div");
         card.classList.add("relic-card");

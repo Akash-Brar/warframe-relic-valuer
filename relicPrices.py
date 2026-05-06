@@ -93,7 +93,7 @@ def getValues(intactRelics):
     return fetchedItems
 
 def addValuesToRelics(intact_relics, item_values):
-    # Define refinement tier probabilities once
+    # Define refinement tier probabilities
     refinement_probs = {
         "intact": {"Rare": 0.02, "Uncommon": 0.11, "Common": 0.2533},
         "exceptional": {"Rare": 0.04, "Uncommon": 0.13, "Common": 0.2333},
@@ -101,13 +101,21 @@ def addValuesToRelics(intact_relics, item_values):
         "radiant": {"Rare": 0.10, "Uncommon": 0.20, "Common": 0.1667}
     }
     
+    # Special probability for Requiem relics (all items have equal chance)
+    requiem_prob = 0.095  # 9.5% for each of 8 items
+    
     for relic in intact_relics:
+        # Check if this is a Requiem relic
+        is_requiem = "Eterna" in relic["name"] or any("Eterna" in item["name"] for item in relic["items"])
+        
         # Initialize accumulators
         totals = {"buy": 0, "sell": 0}
         tier_averages = {
             tier: {"buy": 0, "sell": 0} 
             for tier in refinement_probs.keys()
         }
+        
+        num_items = len(relic["items"])
         
         for item in relic["items"]:
             # Get item values
@@ -116,16 +124,25 @@ def addValuesToRelics(intact_relics, item_values):
             item["buyValue"] = buy_value
             item["sellValue"] = sell_value
             
-            # Update totals
+            # Update totals (sum of all items without weighting)
             totals["buy"] += buy_value
             totals["sell"] += sell_value
             
-            # Calculate and accumulate for each refinement tier
-            for tier, probs in refinement_probs.items():
-                multiplier = probs[item["rarity"]]
-                tier_averages[tier]["buy"] += buy_value * multiplier
-                tier_averages[tier]["sell"] += sell_value * multiplier
-        
+            # Calculate weighted averages based on relic type
+            if is_requiem:
+                # For Requiem Eterna, all items have equal chance (9.5%)
+                # And refinement doesn't change probabilities
+                for tier in refinement_probs.keys():
+                    tier_averages[tier]["buy"] += buy_value * requiem_prob
+                    tier_averages[tier]["sell"] += sell_value * requiem_prob
+                item["chance"] = 9.5
+            else:
+                # Standard relic handling
+                for tier, probs in refinement_probs.items():
+                    multiplier = probs[item["rarity"]]
+                    tier_averages[tier]["buy"] += buy_value * multiplier
+                    tier_averages[tier]["sell"] += sell_value * multiplier
+                
         # Store results in relic
         relic["totalBuyValue"] = round(totals["buy"], 1)
         relic["totalSellValue"] = round(totals["sell"], 1)
