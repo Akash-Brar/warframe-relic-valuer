@@ -15,6 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentRefinement = "intact";
     let currentSort = "total-sell-desc";
 
+    // Refinement chance mapping
+    const refinementChances = {
+        intact: { rare: 2.00, uncommon: 11.00, common: 25.33 },
+        exceptional: { rare: 4.00, uncommon: 13.00, common: 23.33 },
+        flawless: { rare: 6.00, uncommon: 17.00, common: 20.00 },
+        radiant: { rare: 10.00, uncommon: 20.00, common: 16.67 }
+    };
+
     // ---------- fetch relic data ----------
     fetch("RelicValues.json")
         .then(response => {
@@ -62,6 +70,21 @@ document.addEventListener("DOMContentLoaded", () => {
     function getRefinementAverage(relic, type, refinement) {
         const avgKey = `${refinement}Avg${type === 'sell' ? 'Sell' : 'Buy'}`;
         return relic[avgKey] || (type === 'sell' ? relic.totalSellValue : relic.totalBuyValue);
+    }
+
+    // Get the refined chance for an item based on its original rarity and current refinement
+    function getRefinedChance(item, refinement) {
+        const chances = refinementChances[refinement];
+        const rarity = item.rarity;
+        
+        if (rarity === "Rare" && chances.rare !== undefined) {
+            return chances.rare;
+        } else if (rarity === "Uncommon" && chances.uncommon !== undefined) {
+            return chances.uncommon;
+        } else {
+            // Common or default
+            return chances.common || 25.33;
+        }
     }
 
     // Sort relics based on current sort selection
@@ -115,23 +138,14 @@ document.addEventListener("DOMContentLoaded", () => {
         addPositions(displayedRelics);
     }
 
-    // helper: get rarity class based on chance
-    function getRarityClass(chance) {
-        // Handle Requiem relic chance (9.5%)
-        if (Math.abs(chance - 9.5) < 0.01) return "common";
-        
-        // Standard Warframe relic chances
-        if (Math.abs(chance - 2.0) < 0.01) return "rare";
-        if (Math.abs(chance - 11.0) < 0.01) return "uncommon";
-        if (Math.abs(chance - 25.33) < 0.01 || Math.abs(chance - 25.0) < 0.5) return "common";
-        
-        // Fallback logic for any other values
-        if (chance > 20) return "common";
-        if (chance > 8) return "uncommon";
-        return "rare";
+    // helper: get rarity class based on the item's rarity from JSON
+    function getRarityClass(rarity) {
+        if (rarity === "Rare") return "rare";
+        if (rarity === "Uncommon") return "uncommon";
+        return "common"; // Common or any other value
     }
 
-    //  Cad creation
+    // Card creation
     function createRelicCard(relic) {
         const card = document.createElement("div");
         card.classList.add("relic-card");
@@ -166,11 +180,19 @@ document.addEventListener("DOMContentLoaded", () => {
             'radiant': 'Radiant'
         }[currentRefinement];
 
-        // items HTML
+        // items HTML - using refined chances but rarity-based styling
         const itemsHTML = relic.items
-            ?.sort((a, b) => (a.chance ?? 0) - (b.chance ?? 0))
+            ?.sort((a, b) => {
+                // Sort by original chance for consistent ordering
+                const chanceA = a.chance ?? 0;
+                const chanceB = b.chance ?? 0;
+                return chanceA - chanceB;
+            })
             .map(item => {
-                const rarityClass = getRarityClass(item.chance);
+                // Get the refined chance based on current refinement
+                const refinedChance = getRefinedChance(item, currentRefinement);
+                // Get CSS class based on the item's rarity from JSON (not the chance)
+                const rarityClass = getRarityClass(item.rarity);
                 let tierClass = "";
                 if (rarityClass === "rare") tierClass = "item-rare";
                 else if (rarityClass === "uncommon") tierClass = "item-uncommon";
@@ -180,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="item ${tierClass}">
                         <div class="item-info">
                             <span class="item-name">${escapeHtml(item.name)}</span>
-                            <span class="item-chance">${item.chance?.toFixed?.(1) ?? item.chance}%</span>
+                            <span class="item-chance">${refinedChance.toFixed(1)}%</span>
                         </div>
                         <div class="item-values">
                             <span class="sell-value">${(item.sellValue?.toFixed?.(1) ?? item.sellValue ?? 0)}p</span>
