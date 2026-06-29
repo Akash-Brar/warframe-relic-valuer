@@ -23363,7 +23363,7 @@
   {
     "name": "Neo V11",
     "urlName": "neo_v11_relic",
-    "vaulted": false,
+    "vaulted": true,
     "items": [
       {
         "name": "Akbronco Prime Blueprint",
@@ -31499,8 +31499,8 @@
         "chance": 25.33
       },
       {
-        "name": "Akbronco Prime Blueprint",
-        "url_name": "akbronco_prime_blueprint",
+        "name": "Paris Prime Blueprint",
+        "url_name": "paris_prime_blueprint",
         "rarity": "Common",
         "chance": 25.33
       },
