@@ -4300,6 +4300,49 @@
     ]
   },
   {
+    "name": "Axi C13",
+    "urlName": "axi_c13_relic",
+    "vaulted": false,
+    "items": [
+      {
+        "name": "Bronco Prime Barrel",
+        "url_name": "bronco_prime_barrel",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Sarofang Prime Handle",
+        "url_name": "sarofang_prime_handle",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Forma Blueprint",
+        "url_name": "forma_blueprint",
+        "rarity": "Common",
+        "chance": 25.33
+      },
+      {
+        "name": "Braton Prime Receiver",
+        "url_name": "braton_prime_receiver",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Voruna Prime Chassis Blueprint",
+        "url_name": "voruna_prime_chassis_blueprint",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Caliban Prime Neuroptics Blueprint",
+        "url_name": "caliban_prime_neuroptics_blueprint",
+        "rarity": "Rare",
+        "chance": 2
+      }
+    ]
+  },
+  {
     "name": "Neo V5",
     "urlName": "neo_v5_relic",
     "vaulted": true,
