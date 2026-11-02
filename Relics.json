@@ -5312,20 +5312,20 @@
         "chance": 25.33
       },
       {
-        "name": "Ballistica Prime Upper Limb",
-        "url_name": "ballistica_prime_upper_limb",
-        "rarity": "Uncommon",
-        "chance": 11
-      },
-      {
-        "name": "Nautilus Prime Carapace",
-        "url_name": "nautilus_prime_carapace",
+        "name": "Bronco Prime Barrel",
+        "url_name": "bronco_prime_barrel",
         "rarity": "Uncommon",
         "chance": 11
       },
       {
         "name": "Nami Skyla Prime Blade",
         "url_name": "nami_skyla_prime_blade",
+        "rarity": "Uncommon",
+        "chance": 11
+      },
+      {
+        "name": "Nautilus Prime Cerebrum",
+        "url_name": "nautilus_prime_cerebrum",
         "rarity": "Rare",
         "chance": 2
       }
